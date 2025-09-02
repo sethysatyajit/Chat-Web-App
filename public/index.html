@@ -1,0 +1,60 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Chat App</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Auth Screens -->
+        <div id="auth-container" class="container">
+            <div class="auth-form" id="login-form">
+                <h2>Login to Chat</h2>
+                <input type="text" id="login-username" placeholder="Username">
+                <input type="password" id="login-password" placeholder="Password">
+                <button onclick="login()">Login</button>
+                <p>Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
+            </div>
+            
+            <div class="auth-form" id="signup-form" style="display: none;">
+                <h2>Create Account</h2>
+                <input type="text" id="signup-username" placeholder="Username">
+                <input type="password" id="signup-password" placeholder="Password">
+                <button onclick="signup()">Sign Up</button>
+                <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+            </div>
+        </div>
+        
+        <!-- Main Chat Interface -->
+        <div id="chat-container" class="container" style="display: none;">
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <h3>Chats</h3>
+                    <button onclick="logout()">Logout</button>
+                </div>
+                <div class="search-container">
+                    <input type="text" id="search-user" placeholder="Search users..." onkeyup="searchUsers()">
+                </div>
+                <div id="users-list" class="users-list"></div>
+            </div>
+            
+            <div class="chat-area">
+                <div class="chat-header">
+                    <h3 id="current-chat-user">Select a user to chat</h3>
+                </div>
+                <div id="message-container" class="message-container"></div>
+                <div class="message-input">
+                    <input type="text" id="message-input" placeholder="Type a message..." disabled>
+                    <button id="send-button" onclick="sendMessage()" disabled>Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/client.js"></script>
+</body>
+</html>
