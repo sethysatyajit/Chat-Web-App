@@ -1,30 +1,47 @@
-<!-- public/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Chat App</title>
+    <title>Chat Web App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div id="app">
         <!-- Auth Screens -->
         <div id="auth-container" class="container">
+            <div class="logo">
+                <i class="fas fa-comments"></i>
+                <h1>Live Chat</h1>
+            </div>
+            
             <div class="auth-form" id="login-form">
-                <h2>Login to Chat</h2>
-                <input type="text" id="login-username" placeholder="Username">
-                <input type="password" id="login-password" placeholder="Password">
-                <button onclick="login()">Login</button>
-                <p>Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
+                <h2>Welcome Back</h2>
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="login-username" placeholder="Username">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="login-password" placeholder="Password">
+                </div>
+                <button class="btn-primary" onclick="login()">Login</button>
+                <p class="auth-switch">Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
             </div>
             
             <div class="auth-form" id="signup-form" style="display: none;">
                 <h2>Create Account</h2>
-                <input type="text" id="signup-username" placeholder="Username">
-                <input type="password" id="signup-password" placeholder="Password">
-                <button onclick="signup()">Sign Up</button>
-                <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="signup-username" placeholder="Username">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="signup-password" placeholder="Password">
+                </div>
+                <button class="btn-primary" onclick="signup()">Sign Up</button>
+                <p class="auth-switch">Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
             </div>
         </div>
         
@@ -32,25 +49,61 @@
         <div id="chat-container" class="container" style="display: none;">
             <div class="sidebar">
                 <div class="sidebar-header">
-                    <h3>Chats</h3>
-                    <button onclick="logout()">Logout</button>
+                    <div class="user-info">
+                        <div class="avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <h3 id="current-username">Username</h3>
+                            <span class="status online">Online</span>
+                        </div>
+                    </div>
+                    <button class="btn-icon" onclick="logout()" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
                 </div>
+                
                 <div class="search-container">
-                    <input type="text" id="search-user" placeholder="Search users..." onkeyup="searchUsers()">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-user" placeholder="Search users..." oninput="searchUsers()">
                 </div>
+                
+                <div class="section-title">Online Users</div>
+                <div id="online-users" class="users-list"></div>
+                
+                <div class="section-title">All Users</div>
                 <div id="users-list" class="users-list"></div>
             </div>
             
             <div class="chat-area">
                 <div class="chat-header">
-                    <h3 id="current-chat-user">Select a user to chat</h3>
+                    <div class="chat-user-info">
+                        <div class="avatar small">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div>
+                            <h3 id="current-chat-user">Select a user to chat</h3>
+                            <span id="user-status" class="status">Offline</span>
+                        </div>
+                    </div>
+                    <button class="btn-icon" id="menu-toggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
                 </div>
+                
                 <div id="message-container" class="message-container"></div>
-                <div class="message-input">
-                    <input type="text" id="message-input" placeholder="Type a message..." disabled>
-                    <button id="send-button" onclick="sendMessage()" disabled>Send</button>
+                
+                <div class="message-input-container">
+                    <div class="message-input">
+                        <input type="text" id="message-input" placeholder="Type a message..." disabled>
+                        <button id="send-button" class="btn-send" onclick="sendMessage()" disabled>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
+            
+            <div class="sidebar-overlay" id="sidebar-overlay"></div>
         </div>
     </div>
 

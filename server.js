@@ -9,9 +9,23 @@ const io = require('socket.io')(http);
 app.use(express.json());
 app.use(express.static('public'));
 
+// Create data directory if it doesn't exist
+const dataDir = path.join(__dirname, 'data');
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir);
+}
+
 // Data files
-const USERS_FILE = path.join(__dirname, 'data', 'users.json');
-const MESSAGES_FILE = path.join(__dirname, 'data', 'messages.json');
+const USERS_FILE = path.join(dataDir, 'users.json');
+const MESSAGES_FILE = path.join(dataDir, 'messages.json');
+
+// Initialize data files if they don't exist
+if (!fs.existsSync(USERS_FILE)) {
+  fs.writeFileSync(USERS_FILE, JSON.stringify([]));
+}
+if (!fs.existsSync(MESSAGES_FILE)) {
+  fs.writeFileSync(MESSAGES_FILE, JSON.stringify([]));
+}
 
 // Helper functions to read/write JSON files
 function readJSON(filePath) {
@@ -37,7 +51,9 @@ app.post('/api/signup', (req, res) => {
   
   users.push({ username, password });
   writeJSON(USERS_FILE, users);
-  res.json({ success: true });
+  
+  // Auto-login after signup
+  res.json({ success: true, username });
 });
 
 app.post('/api/login', (req, res) => {
@@ -49,7 +65,7 @@ app.post('/api/login', (req, res) => {
     return res.status(401).json({ error: 'Invalid credentials' });
   }
   
-  res.json({ success: true });
+  res.json({ success: true, username });
 });
 
 app.get('/api/users', (req, res) => {
@@ -72,12 +88,14 @@ io.on('connection', (socket) => {
   socket.on('user online', (username) => {
     socket.username = username;
     onlineUsers.set(username, socket.id);
+    io.emit('online users', Array.from(onlineUsers.keys()));
     console.log(`${username} is online`);
   });
   
   socket.on('private message', (data) => {
     const messages = readJSON(MESSAGES_FILE);
     const messageData = {
+      id: Date.now() + Math.random().toString(36).substr(2, 9),
       from: data.from,
       to: data.to,
       message: data.message,
@@ -100,6 +118,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     if (socket.username) {
       onlineUsers.delete(socket.username);
+      io.emit('online users', Array.from(onlineUsers.keys()));
       console.log(`${socket.username} disconnected`);
     }
   });
